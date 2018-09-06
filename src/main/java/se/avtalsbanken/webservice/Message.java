@@ -1,15 +1,15 @@
-package se.avtalsbanken;
+package se.avtalsbanken.webservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import se.avtalsbanken.Demo;
+import se.avtalsbanken.Data;
+
 
 @Controller
-public class MessageController {
+public class Message {
 
-    @autowire Data data;
+    @Autowired Data data;
 
     @GetMapping("/message")
     public String greeting() {
