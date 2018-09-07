@@ -8,6 +8,11 @@ pipeline {
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
+      
+      stage('Build upstream artifacts') {
+        build 'robertgartman/weblib'
+      }
+
       stage('CI Build and push snapshot') {
         when {
           branch 'PR-*'
