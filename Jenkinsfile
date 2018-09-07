@@ -11,7 +11,15 @@ pipeline {
 
       stage('Build upstream artifacts') {
         steps {
-          build job:'/robertgartman/weblib/master', propagate: true, wait: true
+          
+          @NonCPS boolean poll(String job) {
+              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+          }
+          if (poll('/robertgartman/weblib/master')) {
+            build job:'/robertgartman/weblib/master', propagate: true, wait: true
+          }
+
+
         }
       }
 
