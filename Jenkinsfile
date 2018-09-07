@@ -11,7 +11,7 @@ pipeline {
 
       stage('Build upstream artifacts') {
         steps {
-          build '/robertgartman/weblib'
+          build job:'/robertgartman/weblib', propagate: true, wait: true
         }
       }
 
