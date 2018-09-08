@@ -1,22 +1,23 @@
-# The Poll script below:
-# https://stackoverflow.com/a/35241752
-#
-# It will require relaxed security settings. This is the how-to:
-#
-# Install
-# https://wiki.jenkins.io/display/JENKINS/Script+Security+Plugin
-#
-# Visit:
-# https://jenkins.jx.cicd.avtalsbanken.net/scriptApproval/
-#
-# Add the following signatures under "Signatures already approved:" (as of Jenkins ver. 2.126)
-# method hudson.scm.PollingResult hasChanges
-# method jenkins.model.Jenkins getItemByFullName java.lang.String
-# method jenkins.triggers.SCMTriggerItem poll hudson.model.TaskListener
-# staticField hudson.model.TaskListener NULL
-# staticMethod jenkins.model.Jenkins getInstance
+/*
 
+The Poll script below:
+https://stackoverflow.com/a/35241752
 
+It will require relaxed security settings. This is the how-to:
+
+Install
+https://wiki.jenkins.io/display/JENKINS/Script+Security+Plugin
+
+Visit:
+https://jenkins.jx.cicd.avtalsbanken.net/scriptApproval/
+
+Add the following signatures under "Signatures already approved:" (as of Jenkins ver. 2.126)
+method hudson.scm.PollingResult hasChanges
+method jenkins.model.Jenkins getItemByFullName java.lang.String
+method jenkins.triggers.SCMTriggerItem poll hudson.model.TaskListener
+staticField hudson.model.TaskListener NULL
+staticMethod jenkins.model.Jenkins getInstance
+*/
 
 @NonCPS boolean poll(String job) {
   Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
