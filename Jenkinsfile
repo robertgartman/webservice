@@ -1,3 +1,7 @@
+          @NonCPS boolean poll(String job) {
+              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+          }
+
 pipeline {
     agent {
       label "jenkins-maven"
@@ -11,10 +15,8 @@ pipeline {
 
       stage('Build upstream artifacts') {
         steps {
-          
-          @NonCPS boolean poll(String job) {
-              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
-          }
+
+
           if (poll('/robertgartman/weblib/master')) {
             build job:'/robertgartman/weblib/master', propagate: true, wait: true
           }
