@@ -1,5 +1,4 @@
-          @NonCPS boolean poll(String job) {
-              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+
           }
 
 pipeline {
@@ -10,12 +9,15 @@ pipeline {
       ORG               = 'robertgartman'
       APP_NAME          = 'webservice'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
+
+                @NonCPS boolean poll(String job) {
+              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
     }
     stages {
 
       stage('Build upstream artifacts') {
         when {
-          poll('/robertgartman/weblib/master')
+          anyOf(poll('/robertgartman/weblib/master'))
         }
         steps {
             build job:'/robertgartman/weblib/master', propagate: true, wait: true
