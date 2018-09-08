@@ -1,5 +1,5 @@
 
-          }
+
 
 pipeline {
     agent {
@@ -10,8 +10,9 @@ pipeline {
       APP_NAME          = 'webservice'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
 
-                @NonCPS boolean poll(String job) {
-              Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+      @NonCPS boolean poll(String job) {
+        Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+      }
     }
     stages {
 
