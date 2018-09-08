@@ -14,14 +14,11 @@ pipeline {
     stages {
 
       stage('Build upstream artifacts') {
+        when {
+          poll('/robertgartman/weblib/master')
+        }
         steps {
-
-
-          if (poll('/robertgartman/weblib/master')) {
             build job:'/robertgartman/weblib/master', propagate: true, wait: true
-          }
-
-
         }
       }
 
