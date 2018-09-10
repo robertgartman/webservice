@@ -18,7 +18,6 @@ method jenkins.triggers.SCMTriggerItem poll hudson.model.TaskListener
 staticField hudson.model.TaskListener NULL
 staticMethod jenkins.model.Jenkins getInstance
 */
-
 @NonCPS boolean poll(String job) {
   Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
 }
@@ -31,19 +30,26 @@ pipeline {
       ORG               = 'robertgartman'
       APP_NAME          = 'webservice'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-
-
+      UPSTREAM_GIT_REPOS = ['/robertgartman/weblib']
+      UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"].unique()
+      isStale = false;
     }
     stages {
 
-      stage('Build upstream artifacts') {
+      stage('Build stale upstream artifacts') {
         steps {
           script {
-
-              def isStale = poll('/robertgartman/weblib/master')
-              if (isStale) {
-                build job:'/robertgartman/weblib/master', propagate: true, wait: true
+            // Cover all the upstream repos
+            UPSTREAM_GIT_REPOS.each { repo ->
+              // Cover master branch and current branch
+              UPSTREAM_GIT_BRANCHES.each { branch ->
+                def jenkinsJob = repo+'/'+branch
+                if (poll(jenkinsJob)) {
+                  isStale = true;
+                  build job:jenkinsJob, propagate: false, wait: false
+                }
               }
+            }
           }
         }
       }
@@ -51,6 +57,7 @@ pipeline {
       stage('CI Build and push snapshot') {
         when {
           branch 'PR-*'
+          equals expected: false, actual: isStale
         }
         environment {
           PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
@@ -78,6 +85,7 @@ pipeline {
       stage('Build Release') {
         when {
           branch 'master'
+          equals expected: false, actual: isStale
         }
         steps {
           container('maven') {
@@ -108,6 +116,7 @@ pipeline {
       stage('Promote to Environments') {
         when {
           branch 'master'
+          equals expected: false, actual: isStale
         }
         steps {
           dir ('./charts/webservice') {
