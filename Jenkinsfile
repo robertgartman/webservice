@@ -65,7 +65,7 @@ pipeline {
         when {
           allOf{
             branch 'PR-*'
-            equals expected: false, actual: isStale
+            expression {isStale == false}
           }
         }
         environment {
@@ -95,7 +95,10 @@ pipeline {
         when {
           allOf {
             branch 'master'
-            equals expected: false, actual: isStale
+            expression {
+               VALUE_ONE == '1' && VALUE_THREE == '3'
+            }
+            expression {isStale == false}
           }
         }
         steps {
