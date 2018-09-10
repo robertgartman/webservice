@@ -33,7 +33,6 @@ pipeline {
     environment {
       ORG               = 'robertgartman'
       APP_NAME          = 'webservice'
-      CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
       isStale = false;
     }
     stages {
