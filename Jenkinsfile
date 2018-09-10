@@ -19,12 +19,16 @@ staticField hudson.model.TaskListener NULL
 staticMethod jenkins.model.Jenkins getInstance
 */
 @NonCPS boolean poll(String job) {
-  Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
+  def item = Jenkins.instance.getItemByFullName(job)
+  if(item) {
+    return item.poll(TaskListener.NULL).hasChanges()
+  } else {
+    return false;
+  }
 }
 
 def UPSTREAM_GIT_REPOS = ['/robertgartman/weblib']
-def UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"].unique()
-
+def UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"]
 
 pipeline {
     agent {
@@ -40,6 +44,7 @@ pipeline {
       stage('Build stale upstream artifacts') {
         steps {
           script {
+            def branches = UPSTREAM_GIT_BRANCHES.unique().findAll {br -> !br.startsWith("PR-") }
             // Cover all the upstream repos
             UPSTREAM_GIT_REPOS.each { repo ->
               // Cover master branch and current branch
