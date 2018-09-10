@@ -93,7 +93,7 @@ pipeline {
       }
       stage('Build Release') {
         when {
-          allOf{
+          allOf {
             branch 'master'
             equals expected: false, actual: isStale
           }
@@ -126,8 +126,10 @@ pipeline {
       }
       stage('Promote to Environments') {
         when {
-          branch 'master'
-          equals expected: false, actual: isStale
+          allOf {
+            branch 'master'
+            equals expected: false, actual: isStale
+          }
         }
         steps {
           dir ('./charts/webservice') {
