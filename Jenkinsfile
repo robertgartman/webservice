@@ -63,8 +63,10 @@ pipeline {
 
       stage('CI Build and push snapshot') {
         when {
-          branch 'PR-*'
-          equals expected: false, actual: isStale
+          allOf{
+            branch 'PR-*'
+            equals expected: false, actual: isStale
+          }
         }
         environment {
           PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
@@ -91,8 +93,10 @@ pipeline {
       }
       stage('Build Release') {
         when {
-          branch 'master'
-          equals expected: false, actual: isStale
+          allOf{
+            branch 'master'
+            equals expected: false, actual: isStale
+          }
         }
         steps {
           container('maven') {
