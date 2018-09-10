@@ -30,6 +30,8 @@ staticMethod jenkins.model.Jenkins getInstance
 def UPSTREAM_GIT_REPOS = ['/robertgartman/weblib']
 def UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"]
 
+def isStale = false;
+
 pipeline {
     agent {
       label "jenkins-maven"
@@ -37,7 +39,6 @@ pipeline {
     environment {
       ORG               = 'robertgartman'
       APP_NAME          = 'webservice'
-      isStale = false;
     }
     stages {
 
