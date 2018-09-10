@@ -46,7 +46,7 @@ pipeline {
               // Cover master branch and current branch
               UPSTREAM_GIT_BRANCHES.each { branch ->
                 def jenkinsJob = repo+'/'+branch
-                echo jenkinsJob
+                echo 'Checking if stale: ' + jenkinsJob
                 if (poll(jenkinsJob)) {
                   isStale = true;
                   build job:jenkinsJob, propagate: false, wait: false
