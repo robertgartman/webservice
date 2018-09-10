@@ -22,6 +22,10 @@ staticMethod jenkins.model.Jenkins getInstance
   Jenkins.instance.getItemByFullName(job).poll(TaskListener.NULL).hasChanges()
 }
 
+def UPSTREAM_GIT_REPOS = ['/robertgartman/weblib']
+def UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"].unique()
+
+
 pipeline {
     agent {
       label "jenkins-maven"
@@ -30,8 +34,6 @@ pipeline {
       ORG               = 'robertgartman'
       APP_NAME          = 'webservice'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-      UPSTREAM_GIT_REPOS = ['/robertgartman/weblib']
-      UPSTREAM_GIT_BRANCHES = ['master', "$BRANCH_NAME"].unique()
       isStale = false;
     }
     stages {
