@@ -20,7 +20,7 @@ staticMethod jenkins.model.Jenkins getInstance
 */
 @NonCPS boolean poll(String job) {
   def item = Jenkins.instance.getItemByFullName(job)
-  if(item) {
+  if(item != null) {
     return item.poll(TaskListener.NULL).hasChanges()
   } else {
     return false;
