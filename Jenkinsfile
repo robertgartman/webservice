@@ -95,9 +95,6 @@ pipeline {
         when {
           allOf {
             branch 'master'
-            expression {
-               VALUE_ONE == '1' && VALUE_THREE == '3'
-            }
             expression {isStale == false}
           }
         }
