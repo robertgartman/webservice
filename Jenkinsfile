@@ -1,5 +1,4 @@
 /*
-
 The Poll script below:
 https://stackoverflow.com/a/35241752
 
