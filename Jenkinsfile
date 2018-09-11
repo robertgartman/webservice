@@ -41,7 +41,9 @@ pipeline {
       APP_NAME          = 'webservice'
     }
     stages {
-
+      // ************************************
+      //   Build stale upstream artifacts
+      // ************************************
       stage('Build stale upstream artifacts') {
         steps {
           script {
@@ -61,7 +63,9 @@ pipeline {
           }
         }
       }
-
+      // ************************************
+      //   CI Build and push snapshot
+      // ************************************
       stage('CI Build and push snapshot') {
         when {
           allOf{
@@ -94,6 +98,9 @@ pipeline {
           }
         }
       }
+      // ************************************
+      //   Build feature branch
+      // ************************************
       stage('Build feature branch') {
         when {
           allOf {
@@ -124,6 +131,9 @@ pipeline {
           }
         }
       }
+      // ************************************
+      //   Build Release
+      // ************************************
       stage('Build Release (master)') {
         when {
           allOf {
@@ -156,6 +166,9 @@ pipeline {
           }
         }
       }
+      // ************************************
+      //   Promote to Environments
+      // ************************************
       stage('Promote to Environments') {
         when {
           allOf {
