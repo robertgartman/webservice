@@ -111,13 +111,13 @@ pipeline {
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-
-            sh '''
-              cd "./charts/$APP_NAME"
-              make tag
-              cd ../..
-            '''
-
+          }
+          dir ('./charts/webservice') {
+            container('maven') {
+              sh "make tag"
+            }
+          }
+          container('maven') {
             sh 'mvn deploy'
             sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
             sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
@@ -141,13 +141,13 @@ pipeline {
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-
-            sh '''
-              cd "./charts/$APP_NAME"
-              make tag
-              cd ../..
-            '''
-
+          }
+          dir ('./charts/webservice') {
+            container('maven') {
+              sh "make tag"
+            }
+          }
+          container('maven') {
             // No need to run tests. All code changes will pass a PR.
             // Merge to master outside of PR is not allowed
             sh 'mvn -Dmaven.test.skip=true deploy'
