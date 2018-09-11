@@ -1,5 +1,3 @@
-// Branch 1
-
 /*
 
 The Poll script below:
