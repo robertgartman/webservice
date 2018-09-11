@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>se.avtalsbanken</groupId>
 			<artifactId>weblib</artifactId>
-			<version>3.1.20</version>
+			<version>3.1.21</version>
 		</dependency>
 	</dependencies>
 
