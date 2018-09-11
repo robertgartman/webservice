@@ -114,7 +114,7 @@ pipeline {
 
             sh '''
               cd "./charts/$APP_NAME"
-              make tag"
+              make tag
               cd ..
             '''
 
@@ -144,7 +144,7 @@ pipeline {
 
             sh '''
               cd "./charts/$APP_NAME"
-              make tag"
+              make tag
               cd ..
             '''
 
