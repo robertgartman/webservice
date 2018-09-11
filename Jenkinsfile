@@ -112,7 +112,11 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
 
-            sh "make --file ./charts/$APP_NAME/Makefile tag"
+            sh '''
+              cd "./charts/$APP_NAME"
+              make tag"
+              cd ..
+            '''
 
             sh 'mvn deploy'
             sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
@@ -138,7 +142,11 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
 
-            sh "make --file ./charts/$APP_NAME/Makefile tag"
+            sh '''
+              cd "./charts/$APP_NAME"
+              make tag"
+              cd ..
+            '''
 
             // No need to run tests. All code changes will pass a PR.
             // Merge to master outside of PR is not allowed
