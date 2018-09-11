@@ -75,6 +75,8 @@ pipeline {
           HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
         }
         steps {
+          // https://jenkins.io/doc/pipeline/steps/kubernetes/#-container-%20run%20build%20steps%20in%20a%20container
+
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install"
@@ -92,7 +94,33 @@ pipeline {
           }
         }
       }
-      stage('Build Release') {
+      stage('Build feature branch') {
+        when {
+          allOf {
+            branch 'feature*'
+            expression {isStale == false}
+          }
+        }
+        steps {
+          container('maven') {
+            // ensure we're not on a detached head
+            sh "git checkout $BRANCH_NAME"
+            sh "git config --global credential.helper store"
+
+            sh "jx step git credentials"
+            // so we can retrieve the version in later steps
+            sh "echo \$(jx-release-version) > VERSION"
+            sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
+
+            sh "make --file ./charts/$APP_NAME/Makefile tag"
+
+            sh 'mvn deploy'
+            sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
+            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
+          }
+        }
+      }
+      stage('Build Release (master)') {
         when {
           allOf {
             branch 'master'
@@ -109,18 +137,13 @@ pipeline {
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-          }
-          dir ('./charts/webservice') {
-            container('maven') {
-              sh "make tag"
-            }
-          }
-          container('maven') {
-            sh 'mvn clean deploy'
 
+            sh "make --file ./charts/$APP_NAME/Makefile tag"
+
+            // No need to run tests. All code changes will pass a PR.
+            // Merge to master outside of PR is not allowed
+            sh 'mvn -Dmaven.test.skip=true deploy'
             sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
-
-
             sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
         }
