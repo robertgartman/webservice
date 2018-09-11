@@ -115,7 +115,7 @@ pipeline {
             sh '''
               cd "./charts/$APP_NAME"
               make tag
-              cd ..
+              cd ../..
             '''
 
             sh 'mvn deploy'
@@ -145,7 +145,7 @@ pipeline {
             sh '''
               cd "./charts/$APP_NAME"
               make tag
-              cd ..
+              cd ../..
             '''
 
             // No need to run tests. All code changes will pass a PR.
